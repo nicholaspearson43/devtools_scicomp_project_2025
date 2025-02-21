@@ -1,0 +1,92 @@
+Timer unit: 1e-06 s
+
+Total time: 0 s
+File: /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py
+Function: distance at line 9
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     9                                           @line_profiler.profile
+    10                                           def distance(point1: list[float], point2: list[float]):
+    11                                               n = len(point1)
+    12                                               sum = 0
+    13
+    14                                               for i in range(n):
+    15                                                   sum += (point1[i] - point2[i])**2
+    16                                               return sqrt(sum)
+
+Total time: 0.00096444 s
+File: /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py
+Function: majority_vote at line 22
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    22                                           @line_profiler.profile
+    23                                           def majority_vote(neighbors: list[int]):
+    24       281         77.5      0.3      8.0      unique_labels = set(neighbors)
+    25       281         29.1      0.1      3.0      max_label = None
+    26       281         23.3      0.1      2.4      max_count = 0
+    27
+    28       699         87.2      0.1      9.0      for label in unique_labels:
+    29       418         34.9      0.1      3.6          tmp = 0
+    30      2508        224.8      0.1     23.3          for element in neighbors:
+    31      2090        214.3      0.1     22.2              if element == label:
+    32      1405        140.3      0.1     14.5                  tmp += 1
+    33
+    34       418         45.1      0.1      4.7          if tmp >  max_count:
+    35       338         33.1      0.1      3.4              max_count = tmp
+    36       338         31.0      0.1      3.2              max_label = label
+    37
+    38       281         23.8      0.1      2.5      return max_label
+
+Total time: 0.0647974 s
+File: /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py
+Function: distance_numpy at line 18
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    18                                           @line_profiler.profile
+    19                                           def distance_numpy(point1, point2):
+    20     19670      64797.4      3.3    100.0      return np.sqrt(np.sum(np.square(point1 - point2)))
+
+Total time: 0.0939381 s
+File: /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/classifier.py
+Function: _get_k_nearest_neighbors at line 20
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    20                                               @line_profiler.profile
+    21                                               def _get_k_nearest_neighbors(self, X, y, x):
+    22       281      90410.5    321.7     96.2          dist_list = [(idx, self.distance(p, x)) for idx, p in enumerate(X)]
+    23                                                   #Order list of touples based on disatnces
+    24       281       3085.0     11.0      3.3          dist_list.sort(key=lambda x: x[1])
+    25       281        249.8      0.9      0.3          idx_list = [t[0] for t in dist_list[:self.k]]
+    26       281        165.3      0.6      0.2          final_list = [y[idx] for idx in idx_list]
+    27       281         27.6      0.1      0.0          return final_list
+
+Total time: 0.097209 s
+File: /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/classifier.py
+Function: __call__ at line 29
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    29                                               @line_profiler.profile
+    30                                               def __call__(self, data, new_points):
+    31         1          0.8      0.8      0.0          X = data[0]
+    32         1          0.3      0.3      0.0          y = data[1]
+    33         1          0.1      0.1      0.0          y_pred = []
+    34         1          0.3      0.3      0.0          if self.backhand == "numpy":
+    35         1         56.5     56.5      0.1              X = np.array(X)
+    36                                                       #y = np.array(y)
+    37         1        213.7    213.7      0.2              new_points = np.array(new_points)
+    38       282         51.8      0.2      0.1          for x in new_points:
+    39       281      94608.2    336.7     97.3              tmp_labels = self._get_k_nearest_neighbors(X, y, x)
+    40       281       2218.8      7.9      2.3              max_label = utils.majority_vote(tmp_labels)
+    41       281         58.4      0.2      0.1              y_pred.append(max_label)
+    42         1          0.1      0.1      0.0          return y_pred
+
+  0.00 seconds - /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py:9 - distance
+  0.00 seconds - /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py:22 - majority_vote
+  0.06 seconds - /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/utils.py:18 - distance_numpy
+  0.09 seconds - /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/classifier.py:20 - _get_k_nearest_neighbors
+  0.10 seconds - /home/nicholaspearson/DevTools/Lab01/devtools_scicomp_project_2025/src/pyclassify/classifier.py:29 - __call__

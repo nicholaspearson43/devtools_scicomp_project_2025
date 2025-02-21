@@ -1,6 +1,7 @@
 from pyclassify.classifier import kNN
 from pyclassify.utils import read_config, read_file
 import argparse
+import numpy as np
 
 parser = argparse.ArgumentParser(description="Practical session 2")
 parser.add_argument("--config", type=str, default=r"experiments/config")
@@ -12,17 +13,24 @@ parameters = read_config(config_pth)
 
 k = parameters["k"]
 pth = parameters["dataset"]
+try:
+    backhand = parameters["backhand"]
+except:
+    backhand = "plain"
 
 features, labels = read_file(pth)
 n_obs = len(features)
 
-split_idx = int(0.20*n_obs)
-train_features = features[:split_idx]
-train_labels = labels[:split_idx]
-test_features = features[split_idx:]
-test_labels = labels[split_idx:]
+indeces = np.arange(n_obs)
+permuted_indeces = np.random.permutation(indeces)
 
-my_kNN = kNN(k)
+split_idx = int(0.20*n_obs)
+train_features = [features[i] for i in permuted_indeces[:split_idx]]
+train_labels = [labels[i] for i in permuted_indeces[:split_idx]]
+test_features = [features[i] for i in permuted_indeces[split_idx:]]
+test_labels = [labels[i] for i in permuted_indeces[split_idx:]]
+
+my_kNN = kNN(k, backhand)
 y_pred = my_kNN.__call__((train_features, train_labels), test_features)
 n_test = len(test_labels)
 
